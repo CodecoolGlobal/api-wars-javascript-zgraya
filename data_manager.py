@@ -6,7 +6,7 @@ import hashing_utility
 def add_user(cursor, register_form):
     hashed_password = hashing_utility.hash_password(register_form['password'])
     cursor.execute("""
-                        INSERT INTO users (user_name, user, password, email) VALUES ('%s', '%s', '%s', '%s')"""
+                        INSERT INTO users (user_name, user_login, password, email) VALUES ('%s', '%s', '%s', '%s')"""
                    % (register_form['user_name'], register_form['name'], hashed_password, register_form['email']))
 
 @connection.connection_handler

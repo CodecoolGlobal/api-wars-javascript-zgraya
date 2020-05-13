@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 import connection
 import data_manager
 import hashing_utility
@@ -9,10 +9,11 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 @app.route('/')
 def route_list(login_message=""):
+    modalHeaders = ['Name','Height','Mass','Hair Color','Skin Color','Eye Color','Birth Year','Gender']
     headers = ['Name','Diameter(km)','Climate','Terrain','Surface Water Precentage(%)','Population(people)','Residents']
     if 'username' in session:
         return render_template("index.html", login_message=login_message,username=session["username"],headers=headers)
-    return render_template("index.html", login_message=login_message, headers=headers)
+    return render_template("index.html", login_message=login_message, headers=headers, modalHeaders=modalHeaders)
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -54,6 +55,11 @@ def login():
         return render_template("login.html", username=session["username"])
     else:
         return render_template("login.html")
+
+@app.route('/logout', methods=["GET","POST"])
+def logout():
+    session.clear()
+    return redirect(url_for("route_list"))
 
 
 def main():

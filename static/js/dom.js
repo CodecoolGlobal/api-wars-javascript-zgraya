@@ -6,6 +6,13 @@ export let dom = {
             dom.showPlanets(planets);
         });
     },
+    loadResidents: function(residents){
+    for (let residente of residents){
+        let resident = residente.toString()
+        dataHandler.getResident(resident, function (singleResident) {
+            dom.showResident(singleResident);})}},
+
+
     loadNextPlanets: function (){
         let nextButton = document.getElementById('next');
         let link = nextButton.getAttribute('value');
@@ -29,6 +36,54 @@ export let dom = {
     formatNumber: function(num) {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')},
 
+    showResident: function(singleResident){
+
+        let residentData = [];
+        console.log(singleResident);
+        let name = singleResident.name;
+        let height = singleResident.height;
+        let mass = singleResident.mass;
+        let hair = singleResident.hair_color;
+        let eyes = singleResident.eye_color;
+        let year = singleResident.birth_year;
+        let gender = singleResident.gender;
+        let skin = singleResident.skin_color;
+
+        residentData += `
+                <tr>
+                    <td>${name}</td>   
+                    <td>${height}</td>
+                    <td>${mass}</td>
+                    <td>${hair}</td>
+                    <td>${skin}</td>
+                    <td>${eyes}</td>
+                    <td>${year}</td>
+                    <td>${gender}</td>
+                </tr>                
+                `
+        let modal = document.getElementById('modalrows');
+        modal.insertAdjacentHTML('beforeend', residentData)
+    },
+
+
+    finalResidents: function(){
+        let modal = document.getElementById("modalrows");
+        modal.innerHTML = '';
+        let links = this.getAttribute('value');
+        let linksArray = links.split(',');
+        dom.loadResidents(linksArray)
+
+    },
+
+    modalTitle: function(){
+        let planet = this.getAttribute('data-planet');
+        let header = document.getElementById('modalHeader');
+        let text = `<h5 style="text-align: left">Residents of ${planet}</h5>`;
+        header.insertAdjacentHTML('afterbegin', text)
+
+
+    },
+
     showPlanets: function(planets) {
         let next = planets.next;
         let previous = planets.previous;
@@ -43,6 +98,8 @@ export let dom = {
             let surface_water = planet.surface_water;
             let population = planet.population;
             let residents = planet.residents.length;
+            let residentsData = planet.residents
+            console.log(residentsData);
 
             planetList += `
                 <tr>
@@ -53,8 +110,8 @@ export let dom = {
                     <td>${surface_water}</td>
                     <td>${dom.formatNumber(population)}</td>
                     <td>
-                        <button type="button" class="btn btn-primary mojemodale" data-toggle="modal" data-target="#examplemodal">
-                        ${residents}</button>                                       
+                        <button class="button mojemodale" value="${residentsData}" data-planet="${planet_name}">${residents}</button>         
+                            
                     </td>
                 </tr>
             `
@@ -71,19 +128,61 @@ export let dom = {
         previousButton.addEventListener('click', dom.loadPreviousPlanets);
         nextButton.addEventListener('click', dom.loadNextPlanets);
 
-        let modalButtons = document.getElementsByClassName('mojemodale');
+        let modalButtons = document.querySelectorAll('.mojemodale');
         for ( let button of modalButtons){
-            button.addEventListener('click', dom.magia);
+            button.addEventListener('click', dom.magia)
+            button.addEventListener('click', dom.finalResidents);
+            button.addEventListener('click', dom.modalTitle)
         }
+        let closeButton = document.querySelector('.close');
+        closeButton.addEventListener('click', dom.closeModal);
+
+        window.addEventListener('click', dom.outsideClick);
 
 
 
     },
-    magia: function (){
-        let modal = document.getElementById('exampleModal');
-        modal.style.display = 'block';
 
-    }
+    magia: function (){
+        let modal = document.getElementById('mymodal');
+        modal.style.display = 'block';},
+
+    closeModal: function () {
+        let modal = document.getElementById('mymodal');
+        modal.style.display = 'none';
+    },
+    outsideClick: function (e) {
+        let modal = document.getElementById('mymodal');
+        if (e.target === modal) {
+            modal.style.display = 'none';}
+    },
+
+
+// // Get DOM Elements
+// const modal = document.querySelector('#my-modal');
+// const modalBtn = document.querySelector('#modal-btn');
+// const closeBtn = document.querySelector('.close');
+//
+// // Events
+// modalBtn.addEventListener('click', openModal);
+// closeBtn.addEventListener('click', closeModal);
+// window.addEventListener('click', outsideClick);
+//
+// // Open
+// function openModal() {
+//   modal.style.display = 'block';
+// }
+//
+// // Close
+// function closeModal() {
+//   modal.style.display = 'none';
+// }
+//
+// // Close If Outside Click
+// function outsideClick(e) {
+//   if (e.target == modal) {
+//     modal.style.display = 'none';
+
 
 
 

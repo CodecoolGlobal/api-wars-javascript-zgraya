@@ -7,7 +7,6 @@ export let dataHandler =
 
         fetch(url, {
             method: 'GET',
-            credentials: 'same-origin'
         })
         .then(response => response.json())  // parse the response as JSON
         .then(json_response => callback(json_response));  // Call the `callback` with the returned object
@@ -19,5 +18,12 @@ export let dataHandler =
 
     })
     },
+    getResident: function (url, callback) {
+            this._api_get(url, (response)=> {
+                this._data = response;
+                console.log(response)
+                callback(response);})
+
+    }
 
 };
